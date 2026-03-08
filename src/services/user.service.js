@@ -7,10 +7,11 @@ class UserService {
     return user;
   }
 
-  async getUsers() {
-    return await User.find().select("-password");
+  async getUsers(userId) {
+    return await User.find({
+      _id: { $ne: userId },
+    }).select("-password");
   }
-
   async updateProfile(userId, data) {
     const user = await User.findByIdAndUpdate(
       userId,
