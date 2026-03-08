@@ -17,7 +17,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: "https://auth-frontend-udaz.vercel.app",
+    origin: ["http://localhost:3000","https://auth-frontend-udaz.vercel.app"],
     credentials: true,
   }),
 );
