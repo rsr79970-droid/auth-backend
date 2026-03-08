@@ -3,9 +3,8 @@ import cors from "cors";
 import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import { setServers } from "node:dns/promises";
-setServers(["1.1.1.1", "8.8.8.8"]);
-
+import dns from "dns";
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 import { authRoutes } from "./routes/auth.routes.js";
 import { userRoutes } from "./routes/user.routes.js";
 import { connectDB } from "./config/db.js";
