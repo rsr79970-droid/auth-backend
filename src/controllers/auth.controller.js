@@ -14,19 +14,19 @@ class AuthController {
       res.cookie("access_token", accessToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 1000,
       });
-
       res.cookie("refresh_token", refreshToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
       res.status(201).json({ user });
     } catch (error) {
+      console.log(error);
       res.status(400).json({
         message: error.message,
       });
@@ -44,6 +44,7 @@ class AuthController {
 
       res.json(result);
     } catch (error) {
+      console.log(error);
       res.status(400).json({
         message: error.message,
       });
@@ -62,14 +63,14 @@ class AuthController {
       res.cookie("access_token", accessToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 1000,
       });
 
       res.cookie("refresh_token", refreshToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -90,14 +91,15 @@ class AuthController {
       res.cookie("access_token", accessToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 1000,
       });
 
       res.json({ message: "Token refreshed" });
-    } catch {
-      res.status(401).json({
-        message: "Invalid refresh token",
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({
+        message: error.message,
       });
     }
   }
@@ -107,9 +109,10 @@ class AuthController {
       const user = await authService.getMe(req.user.id);
 
       res.json(user);
-    } catch {
-      res.status(401).json({
-        message: "Unauthorized",
+    } catch (error) {
+      console.log(error);
+      res.status(400).json({
+        message: error.message,
       });
     }
   }
@@ -125,6 +128,7 @@ class AuthController {
         message: "Logged out successfully",
       });
     } catch (error) {
+      console.log(error);
       res.status(400).json({
         message: error.message,
       });
