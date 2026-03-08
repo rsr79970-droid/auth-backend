@@ -11,16 +11,19 @@ class AuthController {
         password,
       });
 
-      res.cookie("access_token", accessToken, {
+      const cookieOptions = {
         httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
+      };
+
+      res.cookie("access_token", accessToken, {
+        ...cookieOptions,
         maxAge: 60 * 60 * 1000,
       });
+
       res.cookie("refresh_token", refreshToken, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
+        ...cookieOptions,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -37,12 +40,28 @@ class AuthController {
     try {
       const { email, code } = req.body;
 
-      const result = await authService.verify({
+      const { accessToken, refreshToken, user } = await authService.verify({
         email,
         code,
       });
 
-      res.json(result);
+      const cookieOptions = {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      };
+
+      res.cookie("access_token", accessToken, {
+        ...cookieOptions,
+        maxAge: 60 * 60 * 1000,
+      });
+
+      res.cookie("refresh_token", refreshToken, {
+        ...cookieOptions,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      res.json({ user });
     } catch (error) {
       console.log(error);
       res.status(400).json({
@@ -60,17 +79,19 @@ class AuthController {
         password,
       });
 
-      res.cookie("access_token", accessToken, {
+      const cookieOptions = {
         httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
+      };
+
+      res.cookie("access_token", accessToken, {
+        ...cookieOptions,
         maxAge: 60 * 60 * 1000,
       });
 
       res.cookie("refresh_token", refreshToken, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
+        ...cookieOptions,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -91,15 +112,15 @@ class AuthController {
       res.cookie("access_token", accessToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 1000,
       });
 
       res.json({ message: "Token refreshed" });
     } catch (error) {
       console.log(error);
-      res.status(400).json({
-        message: error.message,
+      res.status(401).json({
+        message: "Invalid refresh token",
       });
     }
   }
@@ -107,12 +128,10 @@ class AuthController {
   async me(req, res) {
     try {
       const user = await authService.getMe(req.user.id);
-
       res.json(user);
     } catch (error) {
-      console.log(error);
-      res.status(400).json({
-        message: error.message,
+      res.status(401).json({
+        message: "Unauthorized",
       });
     }
   }

@@ -60,9 +60,13 @@ class AuthService {
 
     if (!user) throw new Error("User not found");
 
-    if (user.verifyCode !== code) throw new Error("Invalid code");
+    if (user.verifyCode !== code) {
+      throw new Error("Invalid verification code");
+    }
 
-    if (user.verifyCodeExpires < Date.now()) throw new Error("Code expired");
+    if (user.verifyCodeExpires < Date.now()) {
+      throw new Error("Verification code expired");
+    }
 
     user.isVerified = true;
     user.verifyCode = null;
@@ -70,7 +74,20 @@ class AuthService {
 
     await user.save();
 
-    return { message: "Email verified successfully" };
+    // 🔑 создаём токены после verify
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    };
   }
 
   async login(data) {
