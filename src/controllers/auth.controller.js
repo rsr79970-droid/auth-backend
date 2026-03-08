@@ -14,13 +14,13 @@ class AuthController {
       res.cookie("access_token", accessToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         maxAge: 60 * 60 * 1000,
       });
       res.cookie("refresh_token", refreshToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -63,14 +63,14 @@ class AuthController {
       res.cookie("access_token", accessToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         maxAge: 60 * 60 * 1000,
       });
 
       res.cookie("refresh_token", refreshToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -91,7 +91,7 @@ class AuthController {
       res.cookie("access_token", accessToken, {
         httpOnly: true,
         sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        secure: false,
         maxAge: 60 * 60 * 1000,
       });
 
