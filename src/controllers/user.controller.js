@@ -13,6 +13,18 @@ class UserController {
     }
   }
 
+  async getUsers(req, res) {
+    try {
+      const users = await userService.getUsers();
+
+      res.json(users);
+    } catch (error) {
+      res.status(400).json({
+        message: error.message,
+      });
+    }
+  }
+
   async updateProfile(req, res) {
     try {
       const user = await userService.updateProfile(req.user.id, req.body);
@@ -27,21 +39,29 @@ class UserController {
 
   async changePassword(req, res) {
     try {
-      const userId = req.user.id;
-
       const { oldPassword, newPassword } = req.body;
 
-      if (!oldPassword || !newPassword) {
-        throw new Error("Passwords are required");
-      }
-
-      const data = await userService.changePassword(
-        userId,
+      const result = await userService.changePassword(
+        req.user.id,
         oldPassword,
         newPassword,
       );
 
-      res.json(data);
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({
+        message: error.message,
+      });
+    }
+  }
+
+  async changeRole(req, res) {
+    try {
+      const { role } = req.body;
+
+      const user = await userService.changeRole(req.params.id, role);
+
+      res.json(user);
     } catch (error) {
       res.status(400).json({
         message: error.message,

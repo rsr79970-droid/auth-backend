@@ -2,11 +2,13 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 
 class UserService {
-
   async getMe(userId) {
     const user = await User.findById(userId).select("-password");
-
     return user;
+  }
+
+  async getUsers() {
+    return await User.find().select("-password");
   }
 
   async updateProfile(userId, data) {
@@ -18,14 +20,13 @@ class UserService {
         location: data.location,
         website: data.website,
       },
-      { new: true }
+      { new: true },
     ).select("-password");
 
     return user;
   }
 
   async changePassword(userId, oldPassword, newPassword) {
-
     const user = await User.findById(userId);
 
     if (!user) {
@@ -49,6 +50,15 @@ class UserService {
     };
   }
 
+  async changeRole(userId, role) {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true },
+    ).select("-password");
+
+    return user;
+  }
 }
 
 export default new UserService();
